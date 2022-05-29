@@ -48,13 +48,13 @@ def payment():
     "payment_type": method_type,
     "transaction_details": {
       "gross_amount": request.json.get("gross_amount"),
-      "order_id": request.json.get("topup_id"),
+      "order_id": request.json.get("order_id"),
     }
   }
   if require_detail:
     payment_req_data[method_type] = {
       detail_attr: method,
-      "message" : "Pembayaran Topup"
+      "message" : "Pembayaran Checkout"
     }
   charge_api_response = core.charge(payment_req_data)
   if charge_api_response['status_code'][0]=='2':status=True
