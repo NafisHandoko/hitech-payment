@@ -41,9 +41,7 @@ def tes_notif():
 @app.route('/payment', methods=['POST'])
 def payment():
   method = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['method']
-  # timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
   if method=="indomaret":
-    # return request.json
     charge_api_response = core.charge({
       "payment_type": "cstore",
       "transaction_details": {
