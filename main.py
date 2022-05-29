@@ -91,7 +91,7 @@ def payment_topup():
     "topup_id": request.json.get("topup_id"), 
     "amount": int(request.json.get("gross_amount")),
     "payment_code": charge_api_response.get('payment_code', ''),
-    "va_number": va_number[0]['va_number'] if type(va_number)==type({}) else "",
+    "va_number": va_number[0]['va_number'] if type(va_number)==type([]) else "",
     "payment_id": request.json.get("payment_id"),
     "status_id": "0" if charge_api_response['transaction_status']=='failure' else "1" if charge_api_response['transaction_status']=='pending' else "2",
     "user_id": '30abc'
