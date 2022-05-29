@@ -41,29 +41,22 @@ def tes_notif():
 @app.route('/payment', methods=['POST'])
 def payment():
   method = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['method']
-  if method=="indomaret":
-    charge_api_response = core.charge({
-      "payment_type": "cstore",
-      "transaction_details": {
-          "gross_amount": request.json.get("gross_amount"),
-          "order_id": request.json.get("order_id"),
-      },
-      "cstore" : {
-        "store" : method,
-  	    "message" : "Pembayaran Checkout"
-  	  }
-    })
-  elif method=='bri':
-    charge_api_response = core.charge({
-      "payment_type": "bank_transfer",
-      "transaction_details": {
-          "gross_amount": request.json.get("gross_amount"),
-          "order_id": request.json.get("order_id"),
-      },
-      "bank_transfer" : {
-        "bank" : method,
-  	  }
-    })
+  method_type = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['payment_type']
+  require_detail = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['require_detail']
+  detail_attr = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['detail_attr']
+  payment_req_data = {
+    "payment_type": method_type,
+    "transaction_details": {
+      "gross_amount": request.json.get("gross_amount"),
+      "order_id": request.json.get("topup_id"),
+    }
+  }
+  if require_detail:
+    payment_req_data[method_type] = {
+      detail_attr: method,
+      "message" : "Pembayaran Topup"
+    }
+  charge_api_response = core.charge(payment_req_data)
   if charge_api_response['status_code'][0]=='2':status=True
   elif charge_api_response['status_code'][0]=='4' or charge_api_response['status_code'][0]=='5':status=False
   return jsonify({
