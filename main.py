@@ -105,46 +105,6 @@ def payment_topup():
     "status_id": "0" if charge_api_response['transaction_status']=='failure' else "1" if charge_api_response['transaction_status']=='pending' else "2",
     "user_id": '30abc'
   })
-  # if method=="indomaret":
-  #   # return request.json
-  #   charge_api_response = core.charge({
-  #     "payment_type": "cstore",
-  #     "transaction_details": {
-  #         "gross_amount": request.json.get("gross_amount"),
-  #         "order_id": request.json.get("topup_id"),
-  #     },
-  #     "cstore" : {
-  #       "store" : method,
-  # 	    "message" : "Pembayaran Topup"
-  # 	  }
-  #   })
-  #   topup = topup_collection.insert_one({
-  #     "topup_id": request.json.get("topup_id"), 
-  #     "amount": int(request.json.get("gross_amount")),
-  #     "payment_code": charge_api_response['payment_code'],
-  #     "payment_id": request.json.get("payment_id"),
-  #     "status_id": "0" if charge_api_response['transaction_status']=='failure' else "1" if charge_api_response['transaction_status']=='pending' else "2",
-  #     "user_id": '30abc'
-  #   })
-  # elif method=='bri':
-  #   charge_api_response = core.charge({
-  #     "payment_type": "bank_transfer",
-  #     "transaction_details": {
-  #         "gross_amount": request.json.get("gross_amount"),
-  #         "order_id": request.json.get("topup_id"),
-  #     },
-  #     "bank_transfer" : {
-  #       "bank" : method,
-  # 	  }
-  #   })
-  #   topup = topup_collection.insert_one({
-  #     "topup_id": request.json.get("topup_id"), 
-  #     "amount": int(request.json.get("gross_amount")),
-  #     "va_number": charge_api_response['va_numbers'][0]['va_number'],
-  #     "payment_id": request.json.get("payment_id"),
-  #     "status_id": "0" if charge_api_response['transaction_status']=='failure' else "1" if charge_api_response['transaction_status']=='pending' else "2",
-  #     "user_id": '30abc'
-  #   })
   if charge_api_response['status_code'][0]=='2':status=True
   elif charge_api_response['status_code'][0]=='4' or charge_api_response['status_code'][0]=='5':status=False
   return jsonify({
