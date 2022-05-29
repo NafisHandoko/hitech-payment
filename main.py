@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, jsonify
 from midtransclient import Snap, CoreApi
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
-
+CORS(app)
 app.config["MONGO_URI"] = "mongodb+srv://paaa:pemrogramanpaa123@cluster0.ar1x3.mongodb.net/checkout"
 #initializing the client for mongodb
 mongo = PyMongo(app)
@@ -44,6 +45,7 @@ def payment():
   method_type = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['payment_type']
   require_detail = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['require_detail']
   detail_attr = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['detail_attr']
+  instruction = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['instruction']
   payment_req_data = {
     "payment_type": method_type,
     "transaction_details": {
@@ -57,13 +59,16 @@ def payment():
       "message" : "Pembayaran Checkout"
     }
   charge_api_response = core.charge(payment_req_data)
+  charge_api_response['instruction'] = instruction
   if charge_api_response['status_code'][0]=='2':status=True
   elif charge_api_response['status_code'][0]=='4' or charge_api_response['status_code'][0]=='5':status=False
-  return jsonify({
+  response =  jsonify({
     "data":charge_api_response,
     "message":charge_api_response['status_message'],
     "status":status
   })
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  return response
 
   # return render_template('simple_core_api_checkout_permata.html', permata_va_number=charge_api_response['permata_va_number'], gross_amount=charge_api_response['gross_amount'], order_id=charge_api_response['order_id'])
 
@@ -73,6 +78,7 @@ def payment_topup():
   method_type = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['payment_type']
   require_detail = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['require_detail']
   detail_attr = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['detail_attr']
+  instruction = payment_collection.find_one({'payment_id':request.json.get('payment_id')})['instruction']
   payment_req_data = {
     "payment_type": method_type,
     "transaction_details": {
@@ -96,13 +102,16 @@ def payment_topup():
     "status_id": "0" if charge_api_response['transaction_status']=='failure' else "1" if charge_api_response['transaction_status']=='pending' else "2",
     "user_id": '30abc'
   })
+  charge_api_response['instruction'] = instruction
   if charge_api_response['status_code'][0]=='2':status=True
   elif charge_api_response['status_code'][0]=='4' or charge_api_response['status_code'][0]=='5':status=False
-  return jsonify({
+  response =  jsonify({
     "data":charge_api_response,
     "message":charge_api_response['status_message'],
     "status":status
   })
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  return response
   
 @app.route('/payment', methods=['GET'])
 def payment_get():
