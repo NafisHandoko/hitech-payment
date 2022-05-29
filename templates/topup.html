@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topup</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <h1>Topup</h1>
+  <h3 id="saldo">Saldo HiMoney: {{saldo}}</h3>
+  <form id="topup-form">
+    <input type="number" name="gross_amount" id="gross_amount" placeholder="jumlah topup">
+    <select name="agen-bank" id="agen-bank">
+      <option value="empty">Metode Pembayaran</option>
+      <optgroup label="Store" value="cstore">
+          <option value="1">Indomaret</option>
+      </optgroup>
+      <optgroup label="Bank Transfer" value="bank_transfer">
+          <option value="2">BRI</option>
+      </optgroup>
+    </select>
+    <button type="submit">Submit</button>
+  </form>
+  <script src="static/script.js"></script>
+</body>
+</html>
